@@ -1,3 +1,4 @@
+import io
 import os
 import pickle
 import time
@@ -26,16 +27,20 @@ class CookieRepository(object):
 
     def save(self, cookies, username):
         self._ensure_cookies_dir()
-        cookiejar_filepath = self._get_cookies_filepath(username)
-        with open(cookiejar_filepath, "wb") as f:
+        with io.BytesIO() as f:
             pickle.dump(cookies, f)
+            f.seek(0)
+            cookie_data = f.read()
+        self.cookies[username] = cookie_data
 
     def get(self, username):
-        cookies = self._load_cookies_from_cache(username)
-        if cookies and not CookieRepository._is_token_still_valid(cookies):
-            raise LinkedinSessionExpired
-
-        return cookies
+        cookies_data = self.cookies.get(username)
+        if cookies_data:
+            cookies = pickle.loads(cookies_data)
+            if not CookieRepository._is_token_still_valid(cookies):
+                raise LinkedinSessionExpired
+            return cookies
+        return None
 
     def _ensure_cookies_dir(self):
         if not os.path.exists(self.cookies_dir):
