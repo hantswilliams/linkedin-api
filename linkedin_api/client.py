@@ -59,7 +59,7 @@ class Client(object):
         self.logger = logger
         self.metadata = {}
         self._use_cookie_cache = not refresh_cookies
-        self._cookie_repository = CookieRepository(cookies_dir=cookies_dir)
+        self._cookie_repository = CookieRepository()
 
         logging.basicConfig(level=logging.DEBUG if debug else logging.INFO)
 
