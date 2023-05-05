@@ -22,8 +22,8 @@ class CookieRepository(object):
     TODO: refactor to use http.cookiejar.FileCookieJar
     """
 
-    def __init__(self, cookies_dir=settings.COOKIE_PATH):
-        self.cookies_dir = cookies_dir or settings.COOKIE_PATH
+    def __init__(self):
+        self.cookies = {}
 
     def save(self, cookies, username):
         self._ensure_cookies_dir()
